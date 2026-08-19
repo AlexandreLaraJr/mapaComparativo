@@ -1,8 +1,8 @@
 import type { RequisicaoItem, Fornecedor } from "../types/requisicao";
-import {
-    calcularValorFinalAutomatico,
-    formatarMoeda,
-} from "../lib/calculosFornecedor";
+// import {
+//     calcularValorFinalAutomatico,
+//     formatarMoeda,
+// } from "../lib/calculosFornecedor";
 
 interface RequisicaoCardProps {
     item: RequisicaoItem;

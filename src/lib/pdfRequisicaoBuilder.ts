@@ -18,8 +18,8 @@ import {
     formatarMoeda,
 } from "./calculosFornecedor";
 
-const LARGURA_PAGINA = 595; // A4 retrato (vertical)
-const ALTURA_PAGINA = 842;
+const LARGURA_PAGINA = 842; // A4 retrato (vertical)
+const ALTURA_PAGINA = 595;
 const MARGEM = 30;
 const ALTURA_LINHA = 16;
 const TAMANHO_FONTE = 7;
