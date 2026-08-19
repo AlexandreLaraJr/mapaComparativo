@@ -1,6 +1,6 @@
 import { useState } from "react";
 import RequisicaoCard from "./RequisicaoCard";
-import ModalConfirmacaoPdf from "./modalConfirmacaoPdf.tsx";
+import ModalConfirmacaoPdf from "./modalConfirmacaoPdf";
 import type {
     RequisicaoItem,
     Fornecedor,
@@ -52,6 +52,7 @@ export default function ListaRequisicoes() {
                     ...f,
                     id: crypto.randomUUID(),
                     desconto: "",
+                    valorItem: "",
                 }));
             }
 
@@ -232,6 +233,7 @@ export default function ListaRequisicoes() {
                     itens={itens}
                     onConfirmar={handleConfirmarGeracaoPdf}
                     onCancelar={() => setModalAberto(false)}
+                    gerando={gerandoPdf}
                 />
             )}
         </div>

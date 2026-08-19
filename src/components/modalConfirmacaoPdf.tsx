@@ -14,6 +14,7 @@ interface ModalConfirmacaoPdfProps {
     itens: RequisicaoItem[];
     onConfirmar: (dados: DadosConfirmacaoPdf) => void;
     onCancelar: () => void;
+    gerando: boolean;
 }
 
 const MOTIVOS: { value: MotivoEscolhaFornecedor; label: string }[] = [
@@ -26,6 +27,7 @@ export default function ModalConfirmacaoPdf({
     itens,
     onConfirmar,
     onCancelar,
+    gerando,
 }: ModalConfirmacaoPdfProps) {
     const totais = useMemo(() => calcularTotaisPorFornecedor(itens), [itens]);
     const indiceMelhor = useMemo(
@@ -222,10 +224,10 @@ export default function ModalConfirmacaoPdf({
                     <button
                         type="button"
                         onClick={handleConfirmar}
-                        disabled={!formularioValido}
+                        disabled={!formularioValido || gerando}
                         className="rounded-md bg-gray-900 px-5 py-2.5 text-sm font-medium text-white hover:bg-gray-800 disabled:cursor-not-allowed disabled:opacity-50"
                     >
-                        Gerar PDF
+                        {gerando ? "Gerando..." : "Gerar PDF"}
                     </button>
                 </div>
             </div>

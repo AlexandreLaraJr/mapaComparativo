@@ -1,8 +1,8 @@
 import type { RequisicaoItem, Fornecedor } from "../types/requisicao";
-// import {
-//     calcularValorFinalAutomatico,
-//     formatarMoeda,
-// } from "../lib/calculosFornecedor";
+import {
+    calcularValorFinalAutomatico,
+    formatarMoeda,
+} from "../lib/calculosFornecedor";
 
 interface RequisicaoCardProps {
     item: RequisicaoItem;
@@ -302,6 +302,15 @@ export default function RequisicaoCard({
                                         }
                                         type="number"
                                     />
+                                    <span className="mt-1 block text-[11px] text-gray-400">
+                                        Sugestão:{" "}
+                                        {formatarMoeda(
+                                            calcularValorFinalAutomatico(
+                                                item,
+                                                fornecedor,
+                                            ),
+                                        )}
+                                    </span>
                                 </div>
                             </div>
                         </div>

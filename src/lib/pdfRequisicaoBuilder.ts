@@ -240,7 +240,6 @@ function desenharMatrizItens(estado: EstadoDesenho, itens: RequisicaoItem[]) {
         quantidade: 25,
     };
     const LARGURA_SUBCOLUNA_FORNECEDOR = 38; // cada fornecedor tem 3 subcolunas desse tamanho
-    const LARGURA_BLOCO_FORNECEDOR = LARGURA_SUBCOLUNA_FORNECEDOR * 3;
 
     function novaPagina() {
         estado.page = estado.pdfDoc.addPage([LARGURA_PAGINA, ALTURA_PAGINA]);
