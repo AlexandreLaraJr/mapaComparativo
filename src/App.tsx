@@ -1,4 +1,4 @@
-import ListaRequisicoes from "./components/ListaRequisicoes";
+import ListaRequisicoes from "./components/listaRequisicoes";
 
 function App() {
     return <ListaRequisicoes />;

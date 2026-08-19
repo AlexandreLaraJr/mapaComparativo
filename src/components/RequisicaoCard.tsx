@@ -61,7 +61,7 @@ export default function RequisicaoCard({
             <div className="flex flex-wrap gap-4">
                 <div className="w-40">
                     <label className="mb-1 block text-sm font-medium text-gray-700">
-                        Item
+                        Requisição de compra (RC)
                     </label>
                     <input
                         type="text"
@@ -70,7 +70,7 @@ export default function RequisicaoCard({
                             atualizarCampo("numeroRC", e.target.value)
                         }
                         className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-purple-500 focus:outline-none focus:ring-1 focus:ring-purple-500"
-                        placeholder="Ex: 4500012345"
+                        placeholder="Ex: 1034827"
                     />
                 </div>
 
