@@ -56,6 +56,7 @@ export default function ModalConfirmacaoPdf({
             gcmNumero,
             fornecedorSelecionadoIndice,
             motivoEscolha,
+            gcmNome: undefined,
         });
     }
 
