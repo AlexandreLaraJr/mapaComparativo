@@ -55,6 +55,7 @@ export type MotivoEscolhaFornecedor =
     | "melhor_prazo";
 
 export interface DadosConfirmacaoPdf {
+    gcmNome: any;
     comprador: string;
     gcmNumero: string; // 3 dígitos
     fornecedorSelecionadoIndice: number;
@@ -67,5 +68,6 @@ export function criarDadosConfirmacaoVazios(): DadosConfirmacaoPdf {
         gcmNumero: "",
         fornecedorSelecionadoIndice: 0,
         motivoEscolha: "",
+        gcmNome: undefined,
     };
 }
