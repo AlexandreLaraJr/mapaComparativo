@@ -28,8 +28,6 @@ export default function RequisicaoCard({
     onRemoverFornecedor,
     onAtualizarFornecedor,
 }: RequisicaoCardProps) {
-    const ehMaterial = item.tipo === "material";
-
     function atualizarCampo<K extends keyof RequisicaoItem>(
         campo: K,
         valor: RequisicaoItem[K],
@@ -37,16 +35,11 @@ export default function RequisicaoCard({
         onChange({ ...item, [campo]: valor });
     }
 
-    function handleMudarTipo(novoTipo: RequisicaoItem["tipo"]) {
-        onChange({
-            ...item,
-            tipo: novoTipo,
-            numeroMaterial: novoTipo === "servico" ? "" : item.numeroMaterial,
-        });
-    }
-
     return (
         <div className="relative flex h-full w-full flex-col rounded-lg border border-gray-200 bg-white p-5 shadow-sm">
+            <div className="mb-3 text-xs font-semibold uppercase tracking-wide text-purple-600">
+                Item {item.ordem}
+            </div>
             {podeRemover && (
                 <button
                     type="button"
@@ -61,7 +54,7 @@ export default function RequisicaoCard({
             <div className="flex flex-wrap gap-4">
                 <div className="w-40">
                     <label className="mb-1 block text-sm font-medium text-gray-700">
-                        Requisição de compra (RC)
+                        Item
                     </label>
                     <input
                         type="text"
@@ -70,7 +63,7 @@ export default function RequisicaoCard({
                             atualizarCampo("numeroRC", e.target.value)
                         }
                         className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-purple-500 focus:outline-none focus:ring-1 focus:ring-purple-500"
-                        placeholder="Ex: 1034827"
+                        placeholder="Ex: 4500012345"
                     />
                 </div>
 
@@ -78,25 +71,15 @@ export default function RequisicaoCard({
                     <label className="mb-1 block text-sm font-medium text-gray-700">
                         Número de material
                     </label>
-                    {ehMaterial ? (
-                        <input
-                            type="text"
-                            value={item.numeroMaterial}
-                            onChange={(e) =>
-                                atualizarCampo("numeroMaterial", e.target.value)
-                            }
-                            className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-purple-500 focus:outline-none focus:ring-1 focus:ring-purple-500"
-                            placeholder="Ex: 100000123"
-                        />
-                    ) : (
-                        <input
-                            type="text"
-                            value="Serviço"
-                            disabled
-                            readOnly
-                            className="w-full cursor-not-allowed rounded-md border border-gray-200 bg-gray-100 px-3 py-2 text-sm text-gray-500"
-                        />
-                    )}
+                    <input
+                        type="text"
+                        value={item.numeroMaterial}
+                        onChange={(e) =>
+                            atualizarCampo("numeroMaterial", e.target.value)
+                        }
+                        className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-purple-500 focus:outline-none focus:ring-1 focus:ring-purple-500"
+                        placeholder="Ex: 100000123"
+                    />
                 </div>
                 <div className="w-20">
                     <label className="mb-1 block text-sm font-medium text-gray-700">
@@ -112,30 +95,19 @@ export default function RequisicaoCard({
                         placeholder="0"
                     />
                 </div>
-                <div className="w-42">
+                <div className="w-20">
                     <label className="mb-1 block text-sm font-medium text-gray-700">
-                        Tipo
+                        UM
                     </label>
-                    <div className="flex gap-4 pt-2">
-                        <label className="flex items-center gap-1.5 text-sm text-gray-700">
-                            <input
-                                type="radio"
-                                name={`tipo-${item.id}`}
-                                checked={ehMaterial}
-                                onChange={() => handleMudarTipo("material")}
-                            />
-                            Material
-                        </label>
-                        <label className="flex items-center gap-1.5 text-sm text-gray-700">
-                            <input
-                                type="radio"
-                                name={`tipo-${item.id}`}
-                                checked={!ehMaterial}
-                                onChange={() => handleMudarTipo("servico")}
-                            />
-                            Serviço
-                        </label>
-                    </div>
+                    <input
+                        type="text"
+                        value={item.unidadeMedida}
+                        onChange={(e) =>
+                            atualizarCampo("unidadeMedida", e.target.value)
+                        }
+                        className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-purple-500 focus:outline-none focus:ring-1 focus:ring-purple-500"
+                        placeholder="UN"
+                    />
                 </div>
 
                 <div className="w-6/10">

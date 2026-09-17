@@ -8,7 +8,6 @@ import type {
 import type {
     RequisicaoItem,
     Fornecedor,
-    TipoItem,
     DadosConfirmacaoPdf,
 } from "../types/requisicao";
 import {
@@ -18,8 +17,8 @@ import {
     formatarMoeda,
 } from "./calculosFornecedor";
 
-const LARGURA_PAGINA = 842; // A4 retrato (vertical)
-const ALTURA_PAGINA = 595;
+const LARGURA_PAGINA = 595; // A4 retrato (vertical)
+const ALTURA_PAGINA = 842;
 const MARGEM = 30;
 const ALTURA_LINHA = 16;
 const TAMANHO_FONTE = 7;
@@ -96,7 +95,7 @@ function desenharCabecalho(
     const linhasCabecalhoDireita = [
         `Comprador: ${confirmacao.comprador}`,
         `Data: ${dataHoje}`,
-        `GCm: ${confirmacao.gcmNumero}`,
+        `GCm: ${confirmacao.gcmNumero} - ${confirmacao.gcmNome}`,
     ];
 
     linhasCabecalhoDireita.forEach((linha, indice) => {
@@ -234,10 +233,12 @@ function desenharMatrizItens(estado: EstadoDesenho, itens: RequisicaoItem[]) {
         itens.length > 0 ? itens[0].fornecedores.length : 0;
 
     const LARGURA_ITEM = {
-        numeroRC: 40,
-        numeroMaterial: 40,
-        textoBreve: 85,
-        quantidade: 25,
+        ordem: 20,
+        numeroRC: 38,
+        numeroMaterial: 38,
+        textoBreve: 72,
+        quantidade: 22,
+        unidadeMedida: 20,
     };
     const LARGURA_SUBCOLUNA_FORNECEDOR = 38; // cada fornecedor tem 3 subcolunas desse tamanho
 
@@ -273,6 +274,11 @@ function desenharMatrizItens(estado: EstadoDesenho, itens: RequisicaoItem[]) {
         let x = MARGEM;
         const campos: { chave: string; largura: number; valor: string }[] = [
             {
+                chave: "ordem",
+                largura: LARGURA_ITEM.ordem,
+                valor: String(item.ordem),
+            },
+            {
                 chave: "numeroRC",
                 largura: LARGURA_ITEM.numeroRC,
                 valor: item.numeroRC,
@@ -280,8 +286,7 @@ function desenharMatrizItens(estado: EstadoDesenho, itens: RequisicaoItem[]) {
             {
                 chave: "numeroMaterial",
                 largura: LARGURA_ITEM.numeroMaterial,
-                valor:
-                    item.tipo === "material" ? item.numeroMaterial : "Serviço",
+                valor: item.numeroMaterial,
             },
             {
                 chave: "textoBreve",
@@ -292,6 +297,11 @@ function desenharMatrizItens(estado: EstadoDesenho, itens: RequisicaoItem[]) {
                 chave: "quantidade",
                 largura: LARGURA_ITEM.quantidade,
                 valor: item.quantidade,
+            },
+            {
+                chave: "unidadeMedida",
+                largura: LARGURA_ITEM.unidadeMedida,
+                valor: item.unidadeMedida,
             },
         ];
 
@@ -310,18 +320,6 @@ function desenharMatrizItens(estado: EstadoDesenho, itens: RequisicaoItem[]) {
             });
             x += campo.largura;
         }
-
-        // Campo oculto guardando o tipo (material/serviço), necessário pra releitura correta
-        const campoTipo = estado.form.createTextField(
-            nomeCampoItem(indiceItem, "tipo"),
-        );
-        campoTipo.setText(item.tipo === "material" ? "Material" : "Serviço");
-        campoTipo.addToPage(estado.page, {
-            x: -1000,
-            y: -1000,
-            width: 1,
-            height: 1,
-        }); // fora da área visível
 
         item.fornecedores.forEach((fornecedor, indiceFornecedor) => {
             const { valor, valorSemImpostos, valorFinal } =
@@ -389,10 +387,12 @@ function desenharCabecalhoMatriz(
     estado: EstadoDesenho,
     itens: RequisicaoItem[],
     larguraItem: {
+        ordem: number;
         numeroRC: number;
         numeroMaterial: number;
         textoBreve: number;
         quantidade: number;
+        unidadeMedida: number;
     },
     larguraSubcoluna: number,
     quantidadeFornecedores: number,
@@ -410,10 +410,12 @@ function desenharCabecalhoMatriz(
 
     let x = MARGEM;
     const titulosItem = [
+        { titulo: "#", largura: larguraItem.ordem },
         { titulo: "Nº RC", largura: larguraItem.numeroRC },
-        { titulo: "Nº Material", largura: larguraItem.numeroMaterial },
+        { titulo: "Nº Mat.", largura: larguraItem.numeroMaterial },
         { titulo: "Item", largura: larguraItem.textoBreve },
         { titulo: "Qtd.", largura: larguraItem.quantidade },
+        { titulo: "UM", largura: larguraItem.unidadeMedida },
     ];
     for (const t of titulosItem) {
         page.drawText(t.titulo, {
@@ -447,10 +449,12 @@ function desenharCabecalhoMatriz(
 
     x =
         MARGEM +
+        larguraItem.ordem +
         larguraItem.numeroRC +
         larguraItem.numeroMaterial +
         larguraItem.textoBreve +
-        larguraItem.quantidade;
+        larguraItem.quantidade +
+        larguraItem.unidadeMedida;
     for (let i = 0; i < quantidadeFornecedores; i++) {
         const subtitulos = ["Valor", "S/Imp", "Final"];
         for (const sub of subtitulos) {
@@ -518,10 +522,6 @@ export async function lerRequisicoesDoPdf(
     const indicesOrdenados = Array.from(indicesItem).sort((a, b) => a - b);
 
     return indicesOrdenados.map((indiceItem) => {
-        const tipoTexto = lerCampo(nomeCampoItem(indiceItem, "tipo"));
-        const tipo: TipoItem =
-            tipoTexto === "Material" ? "material" : "servico";
-
         const indicesFornecedor = Array.from(
             indicesFornecedorPorItem.get(indiceItem) ?? [],
         ).sort((a, b) => a - b);
@@ -571,15 +571,17 @@ export async function lerRequisicoesDoPdf(
 
         return {
             id: crypto.randomUUID(),
+            ordem:
+                Number(lerCampo(nomeCampoItem(indiceItem, "ordem"))) ||
+                indiceItem + 1,
             numeroRC: lerCampo(nomeCampoItem(indiceItem, "numeroRC")),
-            tipo,
             quantidade: lerCampo(nomeCampoItem(indiceItem, "quantidade")),
+            unidadeMedida: lerCampo(nomeCampoItem(indiceItem, "unidadeMedida")),
             precoAvaliacao: "",
             textoBreve: lerCampo(nomeCampoItem(indiceItem, "textoBreve")),
-            numeroMaterial:
-                tipo === "material"
-                    ? lerCampo(nomeCampoItem(indiceItem, "numeroMaterial"))
-                    : "",
+            numeroMaterial: lerCampo(
+                nomeCampoItem(indiceItem, "numeroMaterial"),
+            ),
             fornecedores:
                 fornecedores.length > 0
                     ? fornecedores

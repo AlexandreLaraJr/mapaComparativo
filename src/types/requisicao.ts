@@ -1,5 +1,3 @@
-export type TipoItem = "material" | "servico";
-
 export interface Fornecedor {
     id: string;
     nome: string;
@@ -13,12 +11,13 @@ export interface Fornecedor {
 
 export interface RequisicaoItem {
     id: string;
+    ordem: number; // posição sequencial do item na requisição (1, 2, 3...)
     numeroRC: string;
-    tipo: TipoItem;
-    quantidade: string;
-    precoAvaliacao: string;
-    textoBreve: string;
     numeroMaterial: string;
+    textoBreve: string;
+    quantidade: string;
+    unidadeMedida: string;
+    precoAvaliacao: string;
     fornecedores: Fornecedor[];
 }
 
@@ -33,6 +32,20 @@ export function criarFornecedorVazio(): Fornecedor {
         pisCofins: "",
         desconto: "",
         valorItem: "",
+    };
+}
+
+export function criarRequisicaoVazia(ordem = 1): RequisicaoItem {
+    return {
+        id: crypto.randomUUID(),
+        ordem,
+        numeroRC: "",
+        numeroMaterial: "",
+        textoBreve: "",
+        quantidade: "",
+        unidadeMedida: "",
+        precoAvaliacao: "",
+        fornecedores: [criarFornecedorVazio()],
     };
 }
 
@@ -54,17 +67,5 @@ export function criarDadosConfirmacaoVazios(): DadosConfirmacaoPdf {
         gcmNumero: "",
         fornecedorSelecionadoIndice: 0,
         motivoEscolha: "",
-    };
-}
-export function criarRequisicaoVazia(): RequisicaoItem {
-    return {
-        id: crypto.randomUUID(),
-        numeroRC: "",
-        tipo: "material",
-        quantidade: "",
-        precoAvaliacao: "",
-        textoBreve: "",
-        numeroMaterial: "",
-        fornecedores: [criarFornecedorVazio()],
     };
 }
